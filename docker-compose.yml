@@ -23,17 +23,20 @@ services:
       context: ./services/auth-service
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
+      - PORT=3001
       - DB_HOST=mysql
       - DB_USER=root
       - DB_PASSWORD=password
       - DB_NAME=logistics_db
-      - JWT_SECRET=your-secret-key
+      - JWT_SECRET=your_jwt_secret
       - JWT_EXPIRES_IN=1h
+      - JWT_REFRESH_EXPIRES_IN=7d
     depends_on:
       - mysql
-      - redis
+    networks:
+      - logistics-network
 
   # Shipment Service
   shipment-service:
@@ -43,6 +46,7 @@ services:
     ports:
       - "3002:3002"
     environment:
+      - PORT=3002
       - DB_HOST=mysql
       - DB_USER=root
       - DB_PASSWORD=password
@@ -52,13 +56,12 @@ services:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=admin
       - RABBITMQ_PASSWORD=admin
-      - JWT_SECRET=your-secret-key
-      - JWT_EXPIRES_IN=1h
     depends_on:
       - mysql
       - redis
       - rabbitmq
-      - auth-service
+    networks:
+      - logistics-network
 
   # Tracking Service
   tracking-service:
@@ -93,18 +96,25 @@ services:
     ports:
       - "3004:3004"
     environment:
-      - NODE_ENV=development
       - PORT=3004
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=logistics_db
       - REDIS_HOST=redis
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=admin
+      - RABBITMQ_PASSWORD=admin
+      - SONARQUBE_URL=http://sonarqube:9000
+      - SONARQUBE_TOKEN=${SONARQUBE_TOKEN}
     depends_on:
       - mysql
       - redis
       - rabbitmq
+      - sonarqube
+    networks:
+      - logistics-network
 
   # MySQL Database
   mysql:
@@ -116,28 +126,32 @@ services:
       - MYSQL_DATABASE=logistics_db
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./services/auth-service/src/infrastructure/database/init.sql:/docker-entrypoint-initdb.d/01-auth.sql
-      - ./services/shipment-service/src/infrastructure/database/init.sql:/docker-entrypoint-initdb.d/02-shipment.sql
-      - ./services/tracking-service/src/infrastructure/database/init.sql:/docker-entrypoint-initdb.d/03-tracking.sql
-    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - logistics-network
 
   # Redis Cache
   redis:
-    image: redis:7-alpine
+    image: redis:6.0-alpine
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - logistics-network
 
   # RabbitMQ Message Broker
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:3.8-management-alpine
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - logistics-network
 
   # SonarQube
   sonarqube:
@@ -150,10 +164,27 @@ services:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
+    networks:
+      - logistics-network
+
+  # SonarQube Scanner
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli
+    volumes:
+      - ./:/usr/src
+    depends_on:
+      - sonarqube
+    networks:
+      - logistics-network
 
 volumes:
   mysql_data:
   redis_data:
+  rabbitmq_data:
   sonarqube_data:
   sonarqube_extensions:
-  sonarqube_logs: 
+  sonarqube_logs:
+
+networks:
+  logistics-network:
+    driver: bridge 

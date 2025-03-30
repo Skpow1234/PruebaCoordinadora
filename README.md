@@ -2,7 +2,7 @@
 
 A microservices-based API for managing logistics shipping and route management, built with TypeScript, Express, and following Clean Architecture principles.
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a microservices architecture with the following services:
 
@@ -17,7 +17,7 @@ Each service follows Clean Architecture principles with the following layers:
 - Infrastructure (Repository Implementations, External Services)
 - Interface (Controllers, Routes)
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Language**: TypeScript
 - **Framework**: Express.js
@@ -29,7 +29,7 @@ Each service follows Clean Architecture principles with the following layers:
 - **Containerization**: Docker & Docker Compose
 - **Code Quality**: SonarQube
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -43,8 +43,7 @@ Each service follows Clean Architecture principles with the following layers:
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd logistics-shipping-api
+git clone <https://github.com/Skpow1234/PruebaCoordinadora>
 ```
 
 2. Install dependencies:
@@ -55,7 +54,6 @@ npm install
 3. Set up environment variables:
 ```bash
 cp .env.example .env
-# Edit .env with your configuration
 ```
 
 4. Start the services using Docker Compose:
@@ -79,7 +77,7 @@ Once the services are running, you can access the Swagger documentation at:
 - Tracking Service: http://localhost:3002/docs
 - Analytics Service: http://localhost:3003/docs
 
-## 🧪 Testing
+## Testing
 
 Run tests for all services:
 ```bash
@@ -91,11 +89,11 @@ Run tests with coverage:
 npm run test:coverage
 ```
 
-## 📊 Code Quality
+## Code Quality
 
 The project uses SonarQube for code quality analysis. Access the SonarQube dashboard at http://localhost:9000 after starting the services.
 
-## 🔐 Security
+## Security
 
 - JWT-based authentication
 - Role-based access control (Admin, User, Transporter)
@@ -104,6 +102,6 @@ The project uses SonarQube for code quality analysis. Access the SonarQube dashb
 - Secure headers with helmet
 - Rate limiting
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
