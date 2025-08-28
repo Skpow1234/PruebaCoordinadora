@@ -51,17 +51,20 @@ SONARQUBE_TOKEN=your_token
 
 ## Installation
 
-1. Install dependencies:
+1 Install dependencies:
+
 ```bash
 npm install
 ```
 
-2. Initialize services:
+2 Initialize services:
+
 ```bash
 npm run init:all
 ```
 
 Or initialize services individually:
+
 ```bash
 npm run init:db      # Initialize database
 npm run init:redis   # Initialize Redis
@@ -72,6 +75,7 @@ npm run init:sonarqube # Initialize SonarQube
 ## Development
 
 Start the service in development mode:
+
 ```bash
 npm run dev
 ```
@@ -79,11 +83,13 @@ npm run dev
 ## Testing
 
 Run tests:
+
 ```bash
 npm test
 ```
 
 Run tests with coverage:
+
 ```bash
 npm run test:coverage
 ```
@@ -91,11 +97,13 @@ npm run test:coverage
 ## Code Quality
 
 Run linting:
+
 ```bash
 npm run lint
 ```
 
 Format code:
+
 ```bash
 npm run format
 ```
@@ -103,6 +111,7 @@ npm run format
 ## Build
 
 Build for production:
+
 ```bash
 npm run build
 ```
@@ -110,6 +119,7 @@ npm run build
 ## Production
 
 Start the service in production mode:
+
 ```bash
 npm start
 ```
@@ -117,18 +127,21 @@ npm start
 ## API Documentation
 
 Once the service is running, access the Swagger documentation at:
-```
+
+```bash
 http://localhost:3004/docs
 ```
 
 ## Docker
 
 Build the Docker image:
+
 ```bash
 docker build -t analytics-service .
 ```
 
 Run the container:
+
 ```bash
 docker run -p 3004:3004 analytics-service
 ```
@@ -151,4 +164,4 @@ The service follows Clean Architecture principles with the following layers:
 
 ## License
 
-This project is licensed under the MIT License. 
+This project is licensed under the MIT License.
